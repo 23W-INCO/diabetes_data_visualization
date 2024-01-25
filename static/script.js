@@ -1,7 +1,7 @@
 var GRAPH_DATA;
 
 function display_graph(graph_data, label, years, element_id) {
-  // Extracting data for Chart.js
+
   var prevalenceData
   if (label == "Man Data"){
     prevalenceData = graph_data['M']['prevalence'];
@@ -20,7 +20,7 @@ function display_graph(graph_data, label, years, element_id) {
     datasets: [
       {
         label:  "Men",
-        data: prevalenceValuesForGender("M"),
+        data: prevalenceValuesForGender(graph_data, "M"),
         backgroundColor: 'rgb(75, 192, 192)',
         borderColor: 'rgb(75, 192, 192)',
         hoverBackgroundColor: 'rgba(75, 192, 192, 0.8)',
@@ -30,7 +30,7 @@ function display_graph(graph_data, label, years, element_id) {
       },
       {
         label:"Women",
-        data: prevalenceValuesForGender("W"),
+        data: prevalenceValuesForGender(graph_data, "W"),
         backgroundColor: 'rgb(255, 99, 132)',
         borderColor: 'rgb(255, 99, 132)',
         hoverBackgroundColor: 'rgba(255, 99, 132, 0.8)',
@@ -39,8 +39,8 @@ function display_graph(graph_data, label, years, element_id) {
       }
     ]
   };
-  
-  function prevalenceValuesForGender(gender) {
+
+  function prevalenceValuesForGender(graph_data, gender) {
     try {
       if (graph_data && graph_data[gender] && graph_data[gender]["prevalence"]) {
         return graph_data[gender]["prevalence"].map(entry => entry[0]);
@@ -53,9 +53,6 @@ function display_graph(graph_data, label, years, element_id) {
       return [];
     }
   }
-  
-  // Rest of your code remains the same...
-  
 
   // Chart configuration
   const config = {
@@ -84,94 +81,66 @@ function display_graph(graph_data, label, years, element_id) {
     }
   };
 
-
-
-
   // Assuming you have a canvas element with id 'myChart'
   var ctx = document.getElementById(element_id).getContext('2d');
   var myChart = new Chart(ctx, config);
   document.getElementById(element_id).style.display = 'block'
 }
 
-
 document.addEventListener("DOMContentLoaded", function () {
-  // API endpoint URLs
-  // const countriesApiUrl = "http://127.0.0.1:5000/countries";
   const countriesApiUrl = "https://effective-goldfish-jgwv59jjqj43qv4p-5000.app.github.dev/countries";
-
-  // const yearApiUrl = "http://127.0.0.1:5000/year";
   const yearApiUrl = "https://effective-goldfish-jgwv59jjqj43qv4p-5000.app.github.dev/year";
+  var Year_List = [];
 
-  var Year_List = []
+  const checkboxContainer = d3.select("#location-checkboxes");
+  const buttonContainer = d3.select("#button-container");
+  const start_dropdown = d3.select("#start_year_dropdown");
+  const end_dropdown = d3.select("#end_year_dropdown");
 
-  // Get the container where checkboxes will be rendered
-  const checkboxContainer = document.getElementById("location-checkboxes");
+  d3.json(countriesApiUrl).then(data => {
+    const checkboxes = checkboxContainer
+      .selectAll("div")
+      .data(data)
+      .enter()
+      .append("div");
 
-  // Get the button container
-  const buttonContainer = document.getElementById("button-container");
+    checkboxes
+      .append("input")
+      .attr("type", "checkbox")
+      .attr("id", d => `checkbox_${d[0]}`)
+      .attr("value", d => d[1]);
 
-  // Get the dropdown element
-  const start_dropdown = document.getElementById("start_year_dropdown");
-  const end_dropdown = document.getElementById("end_year_dropdown");
+    checkboxes
+      .append("label")
+      .attr("for", d => `checkbox_${d[1]}`)
+      .text(d => d[0]);
 
-  // Fetch Country and Country ISO Code from the API
-  fetch(countriesApiUrl)
-    .then(response => response.json())
-    .then(data => {
-      const checkboxes = data.map(entry => {
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.id = `checkbox_${entry[0]}`;
-        checkbox.value = entry[1];
+    const logButton = createButton("Get Data", get_data);
+    buttonContainer.append(() => logButton);
 
-        const label = document.createElement("label");
-        label.htmlFor = `checkbox_${entry[1]}`;
-        label.appendChild(document.createTextNode(entry[0]));
+    const resetButton = createButton("Reset", reset_checkboxes);
+    buttonContainer.append(() => resetButton);
+  });
 
-        const checkboxWrapper = document.createElement("div");
-        checkboxWrapper.appendChild(checkbox);
-        checkboxWrapper.appendChild(label);
+  d3.json(yearApiUrl).then(data => {
+    Year_List = data;
 
-        return checkboxWrapper;
-      });
+    start_dropdown
+      .selectAll("option")
+      .data(data)
+      .enter()
+      .append("option")
+      .attr("value", d => d)
+      .text(d => d);
 
-      checkboxes.forEach(checkbox => {
-        checkboxContainer.appendChild(checkbox);
-      });
-
-      // Create the log button
-      const logButton = createButton("Get Data", get_data);
-      buttonContainer.appendChild(logButton);
-
-      // Create the reset button
-      const resetButton = createButton("Reset", reset_checkboxes);
-      buttonContainer.appendChild(resetButton);
-    })
-    .catch(error => console.error("Error fetching data:", error));
-  
-  // Fetch All Years
-  fetch(yearApiUrl)
-    .then(response => response.json())
-    .then(data => {
-      Year_List = data
-      // Populate the dropdown with options
-      data.forEach(optionText => {
-        const option = document.createElement("option");
-        option.value = optionText;
-        option.text = optionText;
-        start_dropdown.add(option);
-
-      });
-
-      data.forEach(optionText => {
-        const option = document.createElement("option");
-        option.value = optionText;
-        option.text = optionText;
-        end_dropdown.add(option);
-      });
-
-    })
-    .catch(error => console.error("Error fetching data:", error));
+    end_dropdown
+      .selectAll("option")
+      .data(data)
+      .enter()
+      .append("option")
+      .attr("value", d => d)
+      .text(d => d);
+  });
 
   function createButton(text, onClickFunction) {
     const button = document.createElement("button");
@@ -181,78 +150,80 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function reset_checkboxes() {
-    // const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
-    // allCheckboxes.forEach(checkbox => {
-    //   checkbox.checked = false;
-    // });
-    
-    // document.getElementById("myChart_man").style.display = '';
-    // document.getElementById("myChart_woman").style.display = '';
-    // Refresh the page
     location.reload();
   }
 
-  start_dropdown.addEventListener("change", function () {
-    console.log("Selected Option:", start_dropdown.value);
+  start_dropdown.on("change", function () {
+    console.log("Selected Option:", start_dropdown.property("value"));
   });
 
-  end_dropdown.addEventListener("change", function () {
-    console.log("Selected Option:", end_dropdown.value);
+  end_dropdown.on("change", function () {
+    console.log("Selected Option:", end_dropdown.property("value"));
 
-    if (parseInt(start_dropdown.value) > parseInt(end_dropdown.value)) {
+    if (
+      parseInt(start_dropdown.property("value")) >
+      parseInt(end_dropdown.property("value"))
+    ) {
       alert("Start Year can't be greater than End Year !!!");
 
-      end_dropdown.value = Year_List[Year_List.length -1];
+      end_dropdown.property(
+        "value",
+        Year_List[Year_List.length - 1]
+      );
     }
   });
 
-  // Function to get all plotting data based on user filter
   function get_data() {
-    const genderDropdown = document.getElementById("gender");
-    const selectedGender = genderDropdown.value;
+    const genderDropdown = d3.select("#gender");
+    const selectedGender = genderDropdown.property("value");
 
-    // Use the selected value as needed, e.g., log it to the console
     console.log("Selected Gender:", selectedGender);
 
-    const checkedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-    const checkedValues = Array.from(checkedCheckboxes).map(checkbox => checkbox.value);
+    const checkedCheckboxes = d3.selectAll('input[type="checkbox"]:checked');
+    const checkedValues = checkedCheckboxes.nodes().map(checkbox => checkbox.value);
     console.log("Checked Checkboxes:", checkedValues.join(","));
 
-    if (checkedValues.join(",") < 3){
+    if (checkedValues.length < 3) {
       alert("Please Select At least One Country !!!");
     }
-    if ((parseInt(start_dropdown.value) > parseInt(end_dropdown.value)) && (start_dropdown.value != null) && (end_dropdown.value != null)){
+    if (
+      parseInt(start_dropdown.property("value")) >
+        parseInt(end_dropdown.property("value")) &&
+      start_dropdown.property("value") !== null &&
+      end_dropdown.property("value") !== null
+    ) {
       alert("Please Select correct Year sequence !!!");
 
-      end_dropdown.value = Year_List[Year_List.length -1];
+      end_dropdown.property(
+        "value",
+        Year_List[Year_List.length - 1]
+      );
     }
 
+    const country_data_url =
+      "https://effective-goldfish-jgwv59jjqj43qv4p-5000.app.github.dev/country/" +
+      checkedValues.join(",") +
+      "/" +
+      selectedGender +
+      "?start_year=" +
+      start_dropdown.property("value") +
+      "&end_year=" +
+      end_dropdown.property("value");
 
-    const country_data_url = "https://effective-goldfish-jgwv59jjqj43qv4p-5000.app.github.dev/country/" + checkedValues.join(",") + "/" + selectedGender +"?start_year="+start_dropdown.value+"&end_year="+end_dropdown.value
+    d3.json(country_data_url).then(data => {
+      if (selectedGender === "A") {
+        display_graph(data, "All Data", data["M"]["years"], "myChart_man");
+      }
 
-    fetch(country_data_url)
-      .then(response => response.json())
-      .then(data => {
-        console.log(222222, data)
-        if (selectedGender == "A"){
-          display_graph(data, "All Data", data["M"]["years"], "myChart_man");
-          // display_graph(data["W"], "Woman Data", "myChart_woman");
-        }
-        
-        if (selectedGender == "M"){
-          delete data["W"];
-          display_graph(data, "Man Data", data["M"]["years"], "myChart_man");
-        }
+      if (selectedGender === "M") {
+        delete data["W"];
+        display_graph(data, "Man Data", data["M"]["years"], "myChart_man");
+      }
 
-        if (selectedGender == "W"){
-          delete data["M"];
-          display_graph(data, "Woman Data", data["W"]["years"], "myChart_woman");
-        }
-        
-      })
+      if (selectedGender === "W") {
+        delete data["M"];
+        display_graph(data, "Woman Data", data["W"]["years"], "myChart_woman");
+      }
+    });
   }
-
 });
-
-
-
