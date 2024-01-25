@@ -96,9 +96,11 @@ function display_graph(graph_data, label, years, element_id) {
 
 document.addEventListener("DOMContentLoaded", function () {
   // API endpoint URLs
-  const countriesApiUrl = "http://127.0.0.1:5000/countries";
+  // const countriesApiUrl = "http://127.0.0.1:5000/countries";
+  const countriesApiUrl = "https://effective-goldfish-jgwv59jjqj43qv4p-5000.app.github.dev/countries";
 
-  const yearApiUrl = "http://127.0.0.1:5000/year";
+  // const yearApiUrl = "http://127.0.0.1:5000/year";
+  const yearApiUrl = "https://effective-goldfish-jgwv59jjqj43qv4p-5000.app.github.dev/year";
 
   var Year_List = []
 
@@ -226,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    const country_data_url = "http://127.0.0.1:5000/country/" + checkedValues.join(",") + "/" + selectedGender +"?start_year="+start_dropdown.value+"&end_year="+end_dropdown.value
+    const country_data_url = "https://effective-goldfish-jgwv59jjqj43qv4p-5000.app.github.dev/country/" + checkedValues.join(",") + "/" + selectedGender +"?start_year="+start_dropdown.value+"&end_year="+end_dropdown.value
 
     fetch(country_data_url)
       .then(response => response.json())

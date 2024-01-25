@@ -1,10 +1,11 @@
 from operator import countOf
 from flask import Flask, send_file, request
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, origins='*')
 DEFAULT_FILE_NAME = "data.csv"
-
 # Route for serving index.html
 @app.route('/')
 def index():
@@ -151,6 +152,7 @@ def country_data(ISO_CODE, GENDER):
         women_data['years'], women_data['prevalence'] = zip(*sorted(zip(women_data['years'], women_data['prevalence'])))
         return {"W": women_data, "M": ""}
 
-            
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)    
             
     
