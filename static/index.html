@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Horizontal Bar Chart</title>
+  <link rel="stylesheet" href="style.css"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+</head>
+
+<body>
+  <h1>Country Wise Health Demonstration</h1>
+  <p>select locations and use the search button to compare data</p>
+
+  <div class="checkboxes" id="location-checkboxes"></div>
+
+  <label class="gender-dropdown"for="gender">Select Gender:</label>
+  <select id="gender">
+      <option value="A" selected>All</option>
+      <option value="M">Man</option>
+      <option value="W">Women</option>
+  </select>
+
+  <label for="dynamicDropdown">Select Start Year: <label>
+  <select id="start_year_dropdown"></select>
+
+  <label for="dynamicDropdown">Select End Year</label>
+  <select id="end_year_dropdown"></select>
+
+  <div id="button-container"></div>
+
+  
+  <div class="Master_chart_div">
+      <canvas id="myChart_man" width="15%" height="8%"></canvas>
+      <canvas id="myChart_woman" width="15%" height="8%"></canvas>
+  </div>
+
+
+  
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="https://unpkg.com/d3-simple-slider"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+body {
+    background-color: #fcf5b9;
+  }
+
+
+/* Apply margin and padding to the label with class "gender-dropdown" */
+.label.gender-dropdown {
+  margin-bottom: 10px; /* Adjust the margin-bottom value as needed */
+  margin-top: auto;
+}
+
+/* Apply margin and padding to the select element with id "gender" */
+#gender {
+  margin-top: 30px;
+  margin-bottom: 10px; /* Adjust the margin-bottom value as needed */
+  padding: 5px; /* Adjust the padding value as needed */
+}
+
+/* Apply margin and padding to the label associated with the "start_year_dropdown" select */
+label[for="start_year_dropdown"] {
+  display: block; /* Ensure the label takes up the full width */
+  margin-bottom: 10px; /* Adjust the margin-bottom value as needed */
+  margin-left: 10px;
+}
+
+/* Apply margin and padding to the "start_year_dropdown" select */
+#start_year_dropdown {
+  margin-bottom: 10px; /* Adjust the margin-bottom value as needed */
+  padding: 5px; /* Adjust the padding value as needed */
+}
+
+/* Apply margin and padding to the label associated with the "end_year_dropdown" select */
+label[for="end_year_dropdown"] {
+  display: block; /* Ensure the label takes up the full width */
+  margin-bottom: 10px; /* Adjust the margin-bottom value as needed */
+}
+
+/* Apply margin and padding to the "end_year_dropdown" select */
+#end_year_dropdown {
+  margin-bottom: 10px; /* Adjust the margin-bottom value as needed */
+  padding: 5px; /* Adjust the padding value as needed */
+}
+
+#myChart_woman{
+  margin-left: 50px;
+  padding-right: 50px;
+}
+  
+
+
+.Master_chart_div{
+  display: flex;
+  gap: 10px;
+}
+
+#location-checkboxes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+}
+
