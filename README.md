@@ -30,7 +30,7 @@ The dataset on global diabetes, sourced from https://ncdrisc.org/data-downloads-
 
 *Clone Repository*: Users can clone the GitHub repository to access the visualization.
 
-*Run in GitHub Codespaces*: Running the project in GitHub Codespaces provides a seamless environment for users to interact with and explore the diabetes prevalence data.
+*Run in GitHub Codespaces*: To run the project in the CodeSpace, the user needs to replace the placeholder URLs (**const countriesApiUrl** and **const yearApiUrl**) with the appropriate URLs for the CodeSpace environment. 
 
 **Sample Snapshot of the data visualisation**
 
